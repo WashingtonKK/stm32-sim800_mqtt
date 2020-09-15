@@ -1,16 +1,9 @@
-/*
-  MQTT.h - Library for GSM MQTT Client.
-  Created by Nithin K. Kurian, Dhanish Vijayan, Elementz Engineers Guild Pvt. Ltd, July 2, 2016.
-  Released into the public domain.
-*/
-
-#include "GSM_MQTT.h"
+#include "stm32-sim800_mqtt.h"
 #include "Arduino.h"
-#include <SoftwareSerial.h>
 #include <avr/pgmspace.h>
 extern uint8_t GSM_Response;
 
-extern SoftwareSerial mySerial;
+extern HardwareSerial Serial2(USART2);;
 extern String MQTT_HOST;
 extern String MQTT_PORT;
 
@@ -27,8 +20,8 @@ GSM_MQTT::GSM_MQTT(unsigned long KeepAlive)
 
 void GSM_MQTT::begin(void)
 {
-  mySerial.begin(9600);
-  Serial.begin(9600);
+  Serial2.begin(115200);
+  Serial.begin(115200);
   Serial.write("AT\r\n");
   delay(1000);
   _tcpInit();
@@ -41,8 +34,8 @@ char GSM_MQTT::_sendAT(char *command, unsigned long waitms)
   GSM_Response = 0;
   Serial.write(command);
   unsigned long currentMillis = millis();
-  //  mySerial.println(PrevMillis);
-  //  mySerial.println(currentMillis);
+  //  Serial2.println(PrevMillis);
+  //  Serial2.println(currentMillis);
   while ( (GSM_Response == 0) && ((currentMillis - PrevMillis) < waitms) )
   {
     //    delay(1);
@@ -59,8 +52,8 @@ char GSM_MQTT::sendATreply(char *command, char *replystr, unsigned long waitms)
   Serial.write(command);
   unsigned long currentMillis = millis();
 
-  //  mySerial.println(PrevMillis);
-  //  mySerial.println(currentMillis);
+  //  Serial2.println(PrevMillis);
+  //  Serial2.println(currentMillis);
   while ( (GSM_ReplyFlag == 0) && ((currentMillis - PrevMillis) < waitms) )
   {
     //    delay(1);
@@ -141,7 +134,7 @@ void GSM_MQTT::_tcpInit(void)
           }
         }
         _tcpStatusPrev = _tcpStatus;
-        mySerial.print(_tcpStatus);
+        Serial2.print(_tcpStatus);
         switch (_tcpStatus)
         {
           case 2:
@@ -384,7 +377,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(CONNECTMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -395,7 +388,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(CONNACKMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -406,7 +399,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(PUBLISHMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -417,7 +410,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(PUBACKMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -428,7 +421,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(PUBRECMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -439,7 +432,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(PUBRELMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -450,7 +443,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(PUBCOMPMessage  + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -461,7 +454,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(SUBSCRIBEMessage  + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -472,7 +465,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(SUBACKMessage  + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -483,7 +476,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(UNSUBSCRIBEMessage  + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -494,7 +487,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(UNSUBACKMessage  + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -505,7 +498,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(PINGREQMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -516,7 +509,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(PINGRESPMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -527,7 +520,7 @@ void GSM_MQTT::printMessageType(uint8_t Message)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(DISCONNECTMessage + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -552,7 +545,7 @@ void GSM_MQTT::printConnectAck(uint8_t Ack)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(ConnectAck0 + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -563,7 +556,7 @@ void GSM_MQTT::printConnectAck(uint8_t Ack)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(ConnectAck1 + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -574,7 +567,7 @@ void GSM_MQTT::printConnectAck(uint8_t Ack)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(ConnectAck2 + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -585,7 +578,7 @@ void GSM_MQTT::printConnectAck(uint8_t Ack)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(ConnectAck3 + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -596,7 +589,7 @@ void GSM_MQTT::printConnectAck(uint8_t Ack)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(ConnectAck4 + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -607,7 +600,7 @@ void GSM_MQTT::printConnectAck(uint8_t Ack)
         for (k = 0; k < len; k++)
         {
           myChar =  pgm_read_byte_near(ConnectAck5 + k);
-          mySerial.print(myChar);
+          Serial2.print(myChar);
         }
         break;
       }
@@ -654,7 +647,7 @@ void serialEvent()
       {
         MQTT.inputString[MQTT.index] = 0;
         stringComplete = true;
-        mySerial.print(MQTT.inputString);
+        Serial2.print(MQTT.inputString);
         if (strstr(MQTT.inputString, MQTT.reply) != NULL)
         {
           MQTT.GSM_ReplyFlag = 1;
@@ -708,7 +701,7 @@ void serialEvent()
         {
           GSM_Response = 4;
           MQTT.TCP_Flag = true;
-          mySerial.println("MQTT.TCP_Flag = True");
+          Serial2.println("MQTT.TCP_Flag = True");
           MQTT.AutoConnect();
           MQTT.pingFlag = true;
           MQTT.tcpATerrorcount = 0;
@@ -742,7 +735,7 @@ void serialEvent()
           if (Serial.available())
           {
             inChar = (char)Serial.read();
-            mySerial.println(inChar, DEC);
+            Serial2.println(inChar, DEC);
             if ((((Cchar & 0xFF) == 'C') && ((inChar & 0xFF) == 'L') && (MQTT.length == 0)) || (((Cchar & 0xFF) == '+') && ((inChar & 0xFF) == 'P') && (MQTT.length == 0)))
             {
               MQTT.index = 0;
@@ -751,7 +744,7 @@ void serialEvent()
               MQTT.TCP_Flag = false;
               MQTT.MQTT_Flag = false;
               MQTT.pingFlag = false;
-              mySerial.println("Disconnecting");
+              Serial2.println("Disconnecting");
             }
             else
             {
@@ -759,7 +752,7 @@ void serialEvent()
               {
                 MQTT.length += (inChar & 127) *  multiplier;
                 multiplier *= 128;
-                mySerial.println("More");
+                Serial2.println("More");
               }
               else
               {
@@ -771,7 +764,7 @@ void serialEvent()
           }
         }
         MQTT.lengthLocal = MQTT.length;
-        mySerial.println(MQTT.length);
+        Serial2.println(MQTT.length);
         if (MQTT.TCP_Flag == true)
         {
           MQTT.printMessageType(ReceivedMessageType);
@@ -784,7 +777,7 @@ void serialEvent()
             delay(1);
 
           }
-          mySerial.println(" ");
+          Serial2.println(" ");
           if (ReceivedMessageType == CONNACK)
           {
             MQTT.ConnectionAcknowledgement = MQTT.inputString[0] * 256 + MQTT.inputString[1];
@@ -801,15 +794,15 @@ void serialEvent()
           else if (ReceivedMessageType == PUBLISH)
           {
             uint32_t TopicLength = (MQTT.inputString[0]) * 256 + (MQTT.inputString[1]);
-            mySerial.print("Topic : '");
+            Serial2.print("Topic : '");
             MQTT.PublishIndex = 0;
             for (uint32_t iter = 2; iter < TopicLength + 2; iter++)
             {
-              mySerial.print(MQTT.inputString[iter]);
+              Serial2.print(MQTT.inputString[iter]);
               MQTT.Topic[MQTT.PublishIndex++] = MQTT.inputString[iter];
             }
             MQTT.Topic[MQTT.PublishIndex] = 0;
-            mySerial.print("' Message :'");
+            Serial2.print("' Message :'");
             MQTT.TopicLength = MQTT.PublishIndex;
 
             MQTT.PublishIndex = 0;
@@ -822,11 +815,11 @@ void serialEvent()
             }
             for (uint32_t iter = (MessageSTART); iter < (MQTT.lengthLocal); iter++)
             {
-              mySerial.print(MQTT.inputString[iter]);
+              Serial2.print(MQTT.inputString[iter]);
               MQTT.Message[MQTT.PublishIndex++] = MQTT.inputString[iter];
             }
             MQTT.Message[MQTT.PublishIndex] = 0;
-            mySerial.println("'");
+            Serial2.println("'");
             MQTT.MessageLength = MQTT.PublishIndex;
             if (QoS == 1)
             {
@@ -841,28 +834,28 @@ void serialEvent()
           }
           else if (ReceivedMessageType == PUBREC)
           {
-            mySerial.print("Message ID :");
+            Serial2.print("Message ID :");
             MQTT.publishREL(0, MQTT.inputString[0] * 256 + MQTT.inputString[1]) ;
-            mySerial.println(MQTT.inputString[0] * 256 + MQTT.inputString[1]) ;
+            Serial2.println(MQTT.inputString[0] * 256 + MQTT.inputString[1]) ;
 
           }
           else if (ReceivedMessageType == PUBREL)
           {
-            mySerial.print("Message ID :");
+            Serial2.print("Message ID :");
             MQTT.publishCOMP(MQTT.inputString[0] * 256 + MQTT.inputString[1]) ;
-            mySerial.println(MQTT.inputString[0] * 256 + MQTT.inputString[1]) ;
+            Serial2.println(MQTT.inputString[0] * 256 + MQTT.inputString[1]) ;
 
           }
           else if ((ReceivedMessageType == PUBACK) || (ReceivedMessageType == PUBCOMP) || (ReceivedMessageType == SUBACK) || (ReceivedMessageType == UNSUBACK))
           {
-            mySerial.print("Message ID :");
-            mySerial.println(MQTT.inputString[0] * 256 + MQTT.inputString[1]) ;
+            Serial2.print("Message ID :");
+            Serial2.println(MQTT.inputString[0] * 256 + MQTT.inputString[1]) ;
           }
           else if (ReceivedMessageType == PINGREQ)
           {
             MQTT.TCP_Flag = false;
             MQTT.pingFlag = false;
-            mySerial.println("Disconnecting");
+            Serial2.println("Disconnecting");
             MQTT.sendATreply("AT+CIPSHUT\r\n", ".", 4000) ;
             MQTT.modemStatus = 0;
           }
@@ -873,8 +866,8 @@ void serialEvent()
       }
       else
       {
-        mySerial.print("Received :Unknown Message Type :");
-        mySerial.println(inChar);
+        Serial2.print("Received :Unknown Message Type :");
+        Serial2.println(inChar);
       }
     }
   }

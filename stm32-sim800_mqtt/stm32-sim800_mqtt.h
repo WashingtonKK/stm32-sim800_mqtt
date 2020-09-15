@@ -1,10 +1,5 @@
-/*
-  MQTT.h - Library for GSM MQTT Client.
-  Created by Nithin K. Kurian, Dhanish Vijayan, Elementz Engineers Guild Pvt. Ltd, July 2, 2016.
-  Released into the public domain.
-*/
-#ifndef GSM_MQTT_H_
-#define GSM_MQTT_H_
+#ifndef stm32-sim800_mqtt_H_
+#define stm32-sim800_mqtt_H_
 
 //Arduino toolchain header, version dependent
 #if defined(ARDUINO) && ARDUINO >= 100
@@ -119,4 +114,4 @@ class GSM_MQTT
     char _sendAT(char *command, unsigned long waitms);
     unsigned int _generateMessageID(void);
 };
-#endif /* GSM_MQTT_H_ */
+#endif 
